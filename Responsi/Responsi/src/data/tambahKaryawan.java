@@ -156,7 +156,7 @@ public class tambahKaryawan extends javax.swing.JFrame {
     }//GEN-LAST:event_kolomNamaActionPerformed
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
-        // TODO add your handling code here:
+        // Masukin data ke database
         String nama = kolomNama.getText().toString().trim();
         String usia = kolomUsia.getText().toString().trim();
         String gaji = kolomGaji.getText().toString().trim();
@@ -183,14 +183,14 @@ public class tambahKaryawan extends javax.swing.JFrame {
     }//GEN-LAST:event_submitActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
-        // TODO add your handling code here:
+        //reset data
         kolomNama.setText("");
         kolomUsia.setText("");
         kolomGaji.setText("");
     }//GEN-LAST:event_resetActionPerformed
 
     private void kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kembaliActionPerformed
-        // TODO add your handling code here:
+        // untuk pindah ke menu lain
         this.dispose();
         menuUtama a = new menuUtama();
         a.setVisible(true);

@@ -4,6 +4,14 @@
  * and open the template in the editor.
  */
 package data;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import net.proteanit.sql.DbUtils;
 
 /**
  *
@@ -16,8 +24,23 @@ public class lihatKaryawan extends javax.swing.JFrame {
      */
     public lihatKaryawan() {
         initComponents();
+        lihatData();
     }
-
+    
+    //menampilkan data ke tabel
+    public void lihatData(){
+        try{
+            Connection c = Koneksi.getKoneksi();
+            Statement s = c.createStatement();
+            String sql = "SELECT * FROM karyawan";
+            ResultSet r = s.executeQuery(sql);
+            tabel.setModel(DbUtils.resultSetToTableModel(r));
+            s.close();
+        }catch(Exception e){
+            System.out.println("Check error");
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,13 +51,13 @@ public class lihatKaryawan extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabel = new javax.swing.JTable();
         kembali = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -45,7 +68,12 @@ public class lihatKaryawan extends javax.swing.JFrame {
                 "ID", "Nama", "Usia", "Gaji"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabel);
 
         kembali.setBackground(new java.awt.Color(90, 108, 229));
         kembali.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -91,6 +119,15 @@ public class lihatKaryawan extends javax.swing.JFrame {
         a.setVisible(true);
     }//GEN-LAST:event_kembaliActionPerformed
 
+    //biar waktu di klik namanya biar bisa mengedit atau menghapus data
+    private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+        String nama = (model.getValueAt(tabel.getSelectedRow(), 1).toString());
+        new lihatGaji(nama).setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_tabelMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -128,7 +165,7 @@ public class lihatKaryawan extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton kembali;
+    private javax.swing.JTable tabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,18 @@
  */
 package data;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author ASUS
@@ -18,6 +30,32 @@ public class menuEdit extends javax.swing.JFrame {
         initComponents();
     }
 
+    public menuEdit(String nama) {
+        initComponents();
+        kolomNama.setText(nama);
+        SetRecord();
+    }
+    
+    public void SetRecord(){
+        try{
+            Connection c = Koneksi.getKoneksi();
+            Statement s = c.createStatement();
+            String nama = kolomNama.getText().toString().trim();
+            String sql = "SELECT * FROM karyawan WHERE nama = '"+nama+"' ";
+            ResultSet r = s.executeQuery(sql);
+            if (r.next()) {
+                kolomUsia.setText(r.getString("Usia"));
+                kolomGaji.setText(r.getString("Gaji"));
+            }else{
+                System.out.println("Error!");
+            }
+            s.close();
+            r.close();
+        }catch(Exception e){
+            System.out.println("Check error");
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,6 +171,7 @@ public class menuEdit extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void kolomNamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kolomNamaActionPerformed
@@ -141,6 +180,42 @@ public class menuEdit extends javax.swing.JFrame {
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
         // TODO add your handling code here:
+        String nama = kolomNama.getText();
+        String usia = kolomUsia.getText();
+        String gaji = kolomGaji.getText();
+        String id = null;
+        
+        try{
+            Connection c = Koneksi.getKoneksi();
+            Statement s = c.createStatement();
+            String sql2 = "SELECT id FROM karyawan WHERE nama = '"+nama+"'";
+            ResultSet r = s.executeQuery(sql2);
+            if (r.next()) {
+               id = r.getString("id");
+            }else{
+                System.out.println("Error!");
+            }
+            r.close();
+        }catch(SQLException e){
+            System.out.println("Error");
+        }
+        
+        try{
+            Connection c = Koneksi.getKoneksi();
+            Statement s = c.createStatement();
+            try{
+                String sql = "UPDATE karyawan SET Nama = '"+nama+"', Usia = '"+usia+"', Gaji = '"+gaji+"' WHERE Id = '"+id+"'";
+                PreparedStatement p = c.prepareStatement(sql);
+                p.executeUpdate(sql);
+                p.close();
+                JOptionPane.showMessageDialog(null, "Sukses mengupdate data karyawan!");
+            }catch(SQLException e){
+                System.out.println("Error");
+            }
+            s.close();
+        }catch(Exception e){
+            System.out.println("Check error");
+        }
     }//GEN-LAST:event_submitActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
